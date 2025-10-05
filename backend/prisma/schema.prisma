@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
   provider = "prisma-client-js"
@@ -20,14 +15,14 @@ model Users{
   password String
   email String @unique 
   profilePicture String? 
-  todos  Todo[] 
+  todos  Todo[] @relation("todo")
 } 
 
 model Todo{
   todoId Int @unique @default(autoincrement()) 
   title String 
-  description String 
+  description String? 
   isDone Boolean
   userId Int 
-  user  Users @relation(fields: [userId],references: [Id])
+  user  Users @relation(name: "todo",fields: [userId],references: [Id])
 }
