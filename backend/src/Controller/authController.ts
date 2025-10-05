@@ -1,7 +1,11 @@
 import  { type Request, type Response } from "express" 
 import { signupValidation,SigninValidations } from "../Validations/authValidations.js"
 import bcrypt from "bcrypt"
-import { client } from "../db/Db.js"
+import dotenv from "dotenv"
+import { client } from "../db/Db.js" 
+import jwt, { type JwtPayload } from "jsonwebtoken" 
+
+dotenv.config()
 export const Signup = async(req:Request,res:Response)=>{
    
     const result = signupValidation.safeParse(req.body)
@@ -71,18 +75,18 @@ export const Signin = async (req:Request,res:Response)=>{
             }
         })
 
-        if(alreadyExist){
+        if(alreadyExist===null){
             res.json({
                 message:"user doen't exist"        
-        
             })
+            return
         }
 
-        const hashedPassword = await bcrypt.compare(password,alreadyExist?.password as unknown as string)
+        const hashedPassword = await bcrypt.compare(password,alreadyExist.password as unknown as string)
         
         if(hashedPassword){
-            //@ts-ignore
-            const token = jwt.sign(alreadyExist?.Id,JWT_SECRET) ;
+            const JWT_SECRET = process.env.JWT_SECRET 
+            const token = jwt.sign( alreadyExist.Id as unknown as string ,JWT_SECRET as string) ;
             
             res.status(200).json({
                 message:"user logged in" , 
