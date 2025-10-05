@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { client } from "../db/Db.js";
 
+
 export const getAllTodo = async (req:Request,res:Response)=>{
     try{
         const Id = req.userId;
@@ -29,7 +30,8 @@ export const getAllTodo = async (req:Request,res:Response)=>{
 export const addTodo = async(req:Request,res:Response)=>{
     try {
         const {title,isDone,description} = req.body ; 
-        const Id = req.userId 
+        const Id = Number(req.userId) 
+   
       const addTodo =  await client.todo.create({
             data:{
                 title , 
@@ -37,11 +39,12 @@ export const addTodo = async(req:Request,res:Response)=>{
                 isDone ,
                 user:{
                     connect:{
-                       Id: Number(Id)
+                       Id
                     }
                 }
             }
         }) 
+     
         res.json({
             message : "added todo " , 
             todos: {...addTodo} 
@@ -51,5 +54,54 @@ export const addTodo = async(req:Request,res:Response)=>{
             message:"error in the addTodo controller" ,
             error
         })
+     
+    }
+} 
+
+export const updateTodo = async(req:Request,res:Response)=>{
+    try {
+        const {title,isDone,description ,todoId}= req.body
+        const updateTodo = await client.todo.update({
+            where:{
+               todoId:Number(todoId)
+            },data:{
+                isDone,
+                title,
+                description
+            }
+        })
+
+        res.json({
+            message:"here is your updated todo !!" , 
+            todos :{...updateTodo}
+        })
+    } catch (error) {
+        res.json({
+            message:"error in  updating" , 
+            error
+        })
+    }
+} 
+
+export const deleteTodo = async (req:Request,res:Response)=>{
+    try {
+        const todoId = req.body.todoId
+        
+        await client.todo.delete({
+            where:{
+                todoId:Number(todoId),AND:{
+                    userId:Number(req.userId)
+                }
+            }
+        })
+        res.json({
+            Message:"deleted todo :)" , 
+        })
+    } catch (error) {
+        res.json({
+            message:"error in  deleting" , 
+            error
+        })
+        
     }
 }

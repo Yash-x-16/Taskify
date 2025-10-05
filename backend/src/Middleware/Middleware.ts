@@ -9,9 +9,9 @@ export const Middleware = async(req:Request,res:Response,next:NextFunction)=>{
        
         const JWT_SECRET = process.env.JWT_SECRET ; 
         const decoded = jwt.verify(token as string,JWT_SECRET as string) as JwtPayload ; 
-        
+   
         if(decoded){
-             req.userId= decoded.id;
+             req.userId= decoded as unknown as string;
              next() ;  
         }else{
             throw new Error("error is here :) :) :)") ; 
