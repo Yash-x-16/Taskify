@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom"
 import { useRef } from "react" 
 import axios from "axios"
 import { BACKEND_URL } from "../utils/utils"
+
 export function Signup(){  
 
     const emailref = useRef<HTMLInputElement | null>(null)
@@ -19,6 +20,10 @@ export function Signup(){
         password:passwordValue
        })
        console.log(response) ; 
+       console.log(usernameValue)
+       console.log(emailValue)
+       console.log(passwordValue)
+       
     }
 
     const Navigate = useNavigate() 
@@ -31,7 +36,8 @@ export function Signup(){
             <div className="flex flex-col mt-5 gap-2"> 
                 <span className="text-white font-bold "> Email</span> 
                   <input 
-                  ref={emailref}
+                  ref={emailref} 
+                 
                    type="text" 
                   placeholder="dogesh@gmail.com" 
                   className="focus:outline-none px-2 py-2 text-gray-500 hover:scale-105 transition-all duration-300 bg-white rounded-lg"/>
