@@ -2,7 +2,7 @@ import axios from "axios";
 import { useState } from "react"
 import { useNavigate } from "react-router-dom" 
 import { BACKEND_URL } from "../utils/utils";
-
+import toast, { Toaster } from "react-hot-toast";
 
 
 export function Signin (){   
@@ -16,9 +16,13 @@ export function Signin (){
             email,
             password
         }) 
-        console.log(response.data) 
+
+        if(response.data.message ==="invalid validations"){
+          toast("this is your toast",{duration:1500})
+        }
+        
         const token = response.data.token 
-        console.log(token) 
+       
         localStorage.setItem('token',token) ; 
 
     }
