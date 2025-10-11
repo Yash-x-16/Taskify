@@ -1,7 +1,6 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
 import { BACKEND_URL } from "../utils/utils"
-
 interface allTodo{
     title:string,
     description?:string,
@@ -13,11 +12,18 @@ interface allTodo{
 export function TodoPage(){ 
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
-    const [isDone, setIsdone] = useState(false)
+    const [isDone, setIsdone] = useState(false) 
+    const [isClicked,setIsClicked]=useState(false)
+    const [editingTodoId,seteditingTodoId]=useState<number | null>(null) 
+    const [editingTitle,seteditingTitle]=useState<string|null>(null) ; 
     let [alltodo,SetallTodo]=useState<allTodo[]|[]>() 
    
     async function addTodo(){ 
-        try{
+        try{ 
+            if(title===''){
+                alert("cannot add empty string") 
+                return 
+            }
         const response = await axios.post(`${BACKEND_URL}/api/todo/addTodo`,{
             title , 
             description , 
@@ -46,6 +52,24 @@ export function TodoPage(){
     }
     }
 
+    async function updateTodo(x: allTodo) {
+            try {
+                const updated = await axios.put(`${BACKEND_URL}/api/todo/updateTodo`, {
+                title: x.title,
+                description: x.description,
+                isDone: x.isDone,
+                todoId: x.todoId
+                }, {
+                headers: {
+                    token: localStorage.getItem('token')
+                }
+                });
+
+    console.log(updated.data);
+  } catch (e) {
+    console.log('error in updateTodo:', e);
+  }
+}
     async function deleteTodo(x:number){
         try{
             const delTodo = await axios.delete(`${BACKEND_URL}/api/todo/deleteTodo`,{
@@ -96,13 +120,51 @@ export function TodoPage(){
                     My Task
                 </div>
                 <div className="mt-5 w-full p-4">
-                    {alltodo?.map((x,idx)=>{return  <div key={idx=Number(x.todoId)}  className="bg-neutral-700 w-full min-h-10 flex items-center justify-between mb-2 rounded px-3 py-2 text-white">
-                                <span>{x.title}</span>
+                    {alltodo?.map((x,idx)=>
+                        {return <div key={idx=Number(x.todoId)}  className="bg-neutral-700 w-full min-h-10 flex items-center justify-between mb-2 rounded px-3 py-2 text-white">
+                            {editingTodoId===x.todoId? <input
+                                    value={editingTitle ?? ''}
+                                    onChange={(e) => seteditingTitle(e.target.value)}
+                                    className="text-black px-2 py-1 rounded w-1/2"
+                                    /> :<span>{x.title}</span>}
+                            
                                
-                                <button 
+                                <div className="flex  gap-2">
+                                   <button
                                 onClick={()=>{deleteTodo(Number(x.todoId))}}
+                                className="bg-red-400 px-2 py-1 rounded-lg hover:scale-105 transition-all duration-300 cursor-pointer  active:scale-100">
+                                delete
+                                </button> 
+
+
+                                {editingTodoId===x.todoId?<button 
+                                className="bg-yellow-400 px-3 py-1 text-sm rounded-lg hover:scale-105 active:scale-100 transition-all duration-300 cursor-pointer"
+                              onClick={async () => {
+                                        if (editingTitle?.trim() === '') {
+                                            alert("Todo cannot be empty");
+                                            return;
+                                        }
+                                        await updateTodo({
+                                            ...x,
+                                            title: editingTitle as string,
+                                        });
+                                        seteditingTodoId(null);
+                                        seteditingTitle(null);
+                                        fetchTodo();
+                                        }}
+                                >save</button>:
+                                 <button 
+                                 onClick={()=>{
+                                    seteditingTitle(x.title) 
+                                    seteditingTodoId(Number(x.todoId))
+                                 }}
+                                className="bg-green-400  px-3 py-1 text-sm rounded-lg hover:scale-105 active:scale-100 transition-all duration-300 cursor-pointer">
+                                edit</button>
                                 
-                                className="bg-red-400 px-2 py-1 rounded-lg hover:scale-105 transition-all duration-300 cursor-pointer  active:scale-100">delete</button>
+                                }
+                               
+                                </div>
+                               
                             </div> 
                         })}
                   
