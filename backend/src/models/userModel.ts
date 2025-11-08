@@ -6,6 +6,10 @@ const UserSchema = new Schema({
         required:true  , 
         unique:true 
     } , 
+    profilePicture:{
+        type:String  ,
+        default:process.env.DEFAULT_PROFILE_PICTURE 
+    } , 
     password:{
         type:String ,
         required:true 
