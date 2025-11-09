@@ -2,7 +2,8 @@ console.log("radhe radhe :)") ;
 import express from "express"  
 import dotenv from "dotenv"  
 import authRoutes from "./Routes/authRoutes.js"
-import todoRoutes from "./Routes/todoROutes.js"
+import todoRoutes from "./Routes/todoRoutes.js" 
+
 import main from "./db/db.js"
 dotenv.config() 
 
