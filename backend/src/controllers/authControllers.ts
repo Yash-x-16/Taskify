@@ -3,6 +3,7 @@ import { signupValidation,signinValidation } from "../validations/authValidation
 import { User } from "../models/userModel.js"; 
 import jwt, { type JwtPayload } from "jsonwebtoken" 
 import bcrypt from "bcrypt"
+import { email } from "zod";
 
 export const signup = async(req:Request,res:Response)=>{
    const result = signupValidation.safeParse(req.body) 
@@ -85,6 +86,38 @@ export const Signin = async (req:Request,res:Response)=>{
         }
     } catch (error) {
         console.log("Error in the signin controller",error)
+        res.status(500).json({
+            message:"internal server error"
+        })
+    }
+}
+;
+export const getUser =async (req:Request,res:Response)=>{
+    try {
+        const userId = req.userId ; 
+        if(!userId){
+            res.status(400).json({
+                message:"unauthorized"
+            })
+            return ; 
+        }
+        const user = await User.findById(userId) ; 
+        if(user){
+            res.json({
+                username:user.userName , 
+                profilePicture:user.profilePicture , 
+                email:user.email , 
+                todo:user.todo 
+            })
+            return 
+        }
+        if(!user){
+            res.status(404).json({
+                message:"user not found"
+            })
+        }
+    } catch (error) {
+        console.log("error in the get user controller",error) 
         res.status(500).json({
             message:"internal server error"
         })
