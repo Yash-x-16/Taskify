@@ -3,7 +3,7 @@ import { signupValidation,signinValidation } from "../validations/authValidation
 import { User } from "../models/userModel.js"; 
 import jwt, { type JwtPayload } from "jsonwebtoken" 
 import bcrypt from "bcrypt"
-import { email } from "zod";
+
 
 export const signup = async(req:Request,res:Response)=>{
    const result = signupValidation.safeParse(req.body) 
@@ -17,7 +17,7 @@ export const signup = async(req:Request,res:Response)=>{
    }
 
     try {
-        const {username,password,email}=result.data ;
+        const {userName,password,email}=result.data ;
         
         const isUSerAlreadyExist = await User.find({
             email
@@ -33,8 +33,9 @@ export const signup = async(req:Request,res:Response)=>{
         const hashedPassword = await bcrypt.hash(password,salt) ; 
         const createdUser = await User.create({
             email , 
-            username , 
-            password:hashedPassword 
+            userName , 
+            password:hashedPassword ,
+            profilePicture:process.env.DEFAULT_PROFILE_PICTURE
         }) 
         const token = jwt.sign({userId:createdUser._id} as JwtPayload ,process.env.JWT_SECRET as string) 
         res.status(200).json({

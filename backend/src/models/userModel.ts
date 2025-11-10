@@ -8,7 +8,6 @@ const UserSchema = new Schema({
     } , 
     profilePicture:{
         type:String  ,
-        default:process.env.DEFAULT_PROFILE_PICTURE 
     } , 
     password:{
         type:String ,
@@ -24,7 +23,7 @@ const UserSchema = new Schema({
         default:Date.now()
     }  , 
     todo:[{
-        userId:Schema.Types.ObjectId , 
+        type:Schema.Types.ObjectId , 
         ref:"Todo"
     }]
 }) 
