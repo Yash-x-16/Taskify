@@ -1,1 +1,0 @@
-{"root":["./src/index.ts","./src/routes/authroutes.ts","./src/routes/todoroutes.ts","./src/controllers/authcontrollers.ts","./src/db/db.ts","./src/middleware/authmiddleware.ts","./src/models/todomodel.ts","./src/models/usermodel.ts","./src/type/express/index.d.ts","./src/validations/authvalidations.ts"],"version":"5.9.3"}
