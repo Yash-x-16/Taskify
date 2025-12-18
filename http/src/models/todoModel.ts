@@ -5,7 +5,7 @@ const todoSchema = new Schema({
         type:String , 
         required:true , 
     } , 
-    idDone:{
+    isDone:{
         type:Boolean , 
         required:true , 
     } , 

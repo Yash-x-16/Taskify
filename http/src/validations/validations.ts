@@ -10,3 +10,8 @@ export const signinSchema = z.object({
     email :z.email() , 
     password:z.string().min(6)
 })
+
+export const todoSchema = z.object({
+    title:z.string() , 
+    isDone:z.boolean() 
+})
