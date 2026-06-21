@@ -2,13 +2,15 @@ import express from "express"
 import authRouter from "./routes/authRoutes.js";
 import { connectDb } from "./db/db.js"; 
 import { DB_url , port } from "./utils/envExports.js"; 
+import todoRoutes from "./routes/todoRoutes.js";
 
 
 const app = express() 
 
 app.use(express.json()) ;  
 
-app.use("/app/auth",authRouter) ;
+app.use("/app/auth",authRouter) ; 
+app.use("/app/todo",todoRoutes)
 
 app.listen(port ,async ()=>{
 

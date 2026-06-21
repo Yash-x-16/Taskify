@@ -24,7 +24,6 @@ export const signup = async(req:Request,res:Response)=>{
             email
         })
 
-        console.log("already user  = ",checkIfAlreadyUser)
         if(checkIfAlreadyUser){
             res.json({
                 message:"user already exists"
@@ -41,7 +40,9 @@ export const signup = async(req:Request,res:Response)=>{
 
         res.status(200).json({
             message:"user created" , 
-            user :{...newUser , password:null} 
+            username:newUser.email , 
+            email:newUser.email , 
+            createdAt:newUser.createdAt 
         })
         
     } catch (error) {
@@ -55,7 +56,7 @@ export const signup = async(req:Request,res:Response)=>{
 export const signin = async(req:Request,res:Response)=>{
     const data = signinValidations.safeParse(req.body) ; 
     if(!data.success){
-        res.json({
+        res.status(400).json({
             message:"invalid input"
         })
         return 
@@ -89,7 +90,7 @@ export const signin = async(req:Request,res:Response)=>{
         }
     } catch (error) {
         console.log("error in the signin controller = ",error) 
-        res.status(400).json({
+        res.status(501).json({
             message:"error"
         })
     }
