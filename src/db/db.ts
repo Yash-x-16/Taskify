@@ -1,9 +1,10 @@
 import mongoose from "mongoose"; 
-import type { tryCast } from "typescript/unstable/ast";
+
 
 
 export const connectDb = async(url:string)=>{
     try {
+        console.log("connection url is ",url)
         const connection = await mongoose.connect(url) 
         const host  = connection.connection.host ; 
         if(host){

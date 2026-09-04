@@ -21,7 +21,7 @@ export const authMiddleware =(req:Request,res:Response,next:NextFunction)=>{
             })
             return 
         }else{ 
-            
+            req.userId = userId ; 
             next() ; 
         }
 

@@ -2,13 +2,13 @@ import express from "express"
 import cors from "cors"
 import { PORT ,DB_URL} from "./utils/envExports.js" 
 import { connectDb } from "./db/db.js" 
-import { authRoutes } from "./routes/authRoutes.js"
+import { authRouter } from "./routes/authRoutes.js"
 import { todoRouter } from "./routes/todoRoutes.js"
 
 const app = express()  
 app.use(cors())
 app.use(express.json()) 
-app.use("/api/auth",authRoutes) 
+app.use("/api/auth",authRouter) 
 app.use("/api/todo",todoRouter) 
 
 app.listen(PORT,async()=>{

@@ -3,10 +3,10 @@ import { signInSchema, signUpSchema } from "../validations/validations.js";
 import { userModel } from "../db/models/userModel.js"; 
 import bcrypt from "bcrypt"
 import { SALT_ROUNDS ,defaultProfilePicture,jwtSecret} from "../utils/envExports.js";
-
 import jwt from "jsonwebtoken"
 
-export const signUp =async(req:Request,res:Response)=>{
+export const signUp =async(req:Request,res:Response)=>{ 
+    console.log("control reached")
     const data = signUpSchema.safeParse(req.body) ;  
     if(!data.success){ 
         res.status(400).json({
@@ -20,7 +20,7 @@ export const signUp =async(req:Request,res:Response)=>{
 
         if(user=="no user Found"){ 
             const hashedPassword  = await bcrypt.hash(password,Number(SALT_ROUNDS))
-            const createdUser = await userModel.create({
+             await userModel.create({
                 email , 
                 userName , 
                 password:hashedPassword , 
@@ -30,7 +30,7 @@ export const signUp =async(req:Request,res:Response)=>{
 
             res.status(201).json({
                 message:"user created" , 
-                user: {...createdUser, password:null}
+                user: {userName, email , profilePicture:defaultProfilePicture}
             })
         }else{
             res.status(400).json({
@@ -60,7 +60,8 @@ export  const signIn =async(req:Request,res:Response)=>{
         const user = await(checkUserAlreadyExist(email)) ; 
         if(user!=="no user Found" && user != undefined){
            const userId = user.user._id
-            const passCheck = await bcrypt.compare(user.user.password,password) 
+           console.log("user pass word is :  ",user)
+            const passCheck = await bcrypt.compare(password,user.user.password) 
             if(passCheck){
                 const token = jwt.sign({userId},jwtSecret as string )   
                 res.status(200).json({
@@ -75,6 +76,10 @@ export  const signIn =async(req:Request,res:Response)=>{
                 return 
             }
 
+        }else{
+            res.status(404).json({
+                message:"user not found"
+            })
         }
     } catch (error) {
         console.log("error in the authController" , error) 
@@ -87,7 +92,7 @@ export  const signIn =async(req:Request,res:Response)=>{
 
 const checkUserAlreadyExist = async(email:string)=>{
     try {
-        const user = await userModel.findOne({email}) ; 
+        const user = await userModel.findOne({email}).lean() ; 
         if(!user){
             return "no user Found"
         }else{
