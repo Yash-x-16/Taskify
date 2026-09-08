@@ -14,5 +14,5 @@ export const signInSchema = z.object({
 
 export const todoSchema = z.object({
     title:z.string().min(4) , 
-    description:z.string().optional() , 
+    description:z.string() , 
 })

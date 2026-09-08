@@ -1,13 +1,10 @@
 import express from "express" 
 import { authMiddleware } from "../middleware/authMiddleware.js"
-    export const todoRouter = express.Router() 
-    
-    try {   
-        todoRouter.get('/todo',authMiddleware) 
-        todoRouter.post('/addTodo',authMiddleware) 
-        todoRouter.put('/:todoId',authMiddleware) , 
-        todoRouter.delete("/:todoId",authMiddleware)
+import { createTodo, deleteTodo, getTodos, updateTodo } from "../controllers/todoController.js"
 
-    } catch (error) {
-        console.log("error in the todoRoute",error)
-    }
+export const todoRouter = express.Router()
+
+todoRouter.get("/",authMiddleware,getTodos)
+todoRouter.post("/",authMiddleware,createTodo)
+todoRouter.put("/:todoId",authMiddleware,updateTodo)
+todoRouter.delete("/:todoId",authMiddleware,deleteTodo)

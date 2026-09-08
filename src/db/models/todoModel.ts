@@ -1,4 +1,4 @@
-import  { model, Schema } from "mongoose";
+import  mongoose, { model, Schema } from "mongoose";
 
 const todoSchema = new Schema({
     title:{
@@ -18,7 +18,7 @@ const todoSchema = new Schema({
         required:true
     } , 
     user:{
-        type:Schema.Types.ObjectId ,
+        type:mongoose.Schema.ObjectId ,
         required:true
     }
 })
