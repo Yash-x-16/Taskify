@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { todoModel } from "../db/models/todoModel.js";
 import { todoSchema } from "../validations/validations.js";
+import { set } from "mongoose";
 
 export const createTodo = async(req:Request,res:Response)=>{
     const data = todoSchema.safeParse(req.body);
@@ -58,17 +59,23 @@ export const updateTodo = async(req:Request,res:Response)=>{
         return;
     }
 
-    try {
-        const todoId = req.params.todoId  as string
+    try { 
+        const todoId = req.params.todoId as string;   
+        const {title , description} = data.data
+        const isDone:boolean = req.body.isDone 
         if(!todoId){
             res.status(404).json({
-                message:"todo doesn't exist"
+                message:"no todo found"
             })
             return 
         }
         const todo = await todoModel.findOneAndUpdate(
-            {_id:todoId,user:req.userId},
-            
+            {_id:todoId} ,
+            {title , 
+                description  , 
+                isDone
+            } ,
+            {new:true,runValidators:true}
         );
 
         if(!todo){
@@ -91,10 +98,16 @@ export const updateTodo = async(req:Request,res:Response)=>{
 };
 
 export const deleteTodo = async(req:Request,res:Response)=>{
-    try {
+    try { 
+        const todoId = req.params.todoId as string
+        if(!todoId){
+            res.status(404).json({
+                message:"no todo found"
+            }) 
+            return 
+        }
         const todo = await todoModel.findOneAndDelete({
-            _id:req.params.todoId,
-            user:req.userId
+            _id:todoId
         });
 
         if(!todo){
